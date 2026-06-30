@@ -1,0 +1,19 @@
+# Hadoop tarball (trop lourd pour GitHub)
+docker/hadoop/hadoop-*.tar.gz
+
+# Java build artifacts
+mapreduce/target/
+*.class
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs
+*.log
+*.out
+
+# OS
+.DS_Store
+Thumbs.db

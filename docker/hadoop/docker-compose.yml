@@ -1,0 +1,59 @@
+services:
+  hadoop-master:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hadoop-master
+    hostname: hadoop-master
+    ports:
+      - "9870:9870"   # NameNode UI
+      - "8088:8088"   # YARN UI
+      - "9000:9000"   # HDFS
+      - "8090:8090"   # Dashboard Web
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+      - ../../ecommerce_dataset_bigdata.csv:/data/ecommerce_dataset_bigdata.csv:ro
+      - ../../mapreduce/target/ecommerce-mapreduce-1.0-SNAPSHOT.jar:/apps/ecommerce-mapreduce.jar:ro
+    networks:
+      - hadoop-net
+    environment:
+      - NODE_TYPE=master
+
+  hadoop-worker1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hadoop-worker1
+    hostname: hadoop-worker1
+    depends_on:
+      - hadoop-master
+    volumes:
+      - hadoop_datanode1:/hadoop/dfs/data
+    networks:
+      - hadoop-net
+    environment:
+      - NODE_TYPE=worker
+
+  hadoop-worker2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hadoop-worker2
+    hostname: hadoop-worker2
+    depends_on:
+      - hadoop-master
+    volumes:
+      - hadoop_datanode2:/hadoop/dfs/data
+    networks:
+      - hadoop-net
+    environment:
+      - NODE_TYPE=worker
+
+networks:
+  hadoop-net:
+    driver: bridge
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode1:
+  hadoop_datanode2:
